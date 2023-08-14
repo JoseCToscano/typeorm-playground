@@ -1,4 +1,9 @@
+
+# Node modules
 node_modules
+
+src/config/.env
+
 .D*
 ._D*
 .VSCodeCounter/

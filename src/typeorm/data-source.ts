@@ -1,7 +1,7 @@
-import { DataSourceOptions } from 'typeorm';
+import {DataSource} from "typeorm";
 
-const config: DataSourceOptions = {
-    type: 'mysql',
+export default new DataSource({
+    type: "mysql",
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT || "3306"),
     username: process.env.DB_USER,
@@ -12,6 +12,5 @@ const config: DataSourceOptions = {
     relationLoadStrategy: process.env.DB_RELATION_LOAD_STRATEGY === 'join' ? 'join' : 'query',
     entities: ['src/typeorm/entities/*.ts'],
     migrations: ['src/typeorm/migrations/*.ts'],
-};
-
-export default config;
+    migrationsTableName: 'migrations',
+});

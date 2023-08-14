@@ -1,14 +1,9 @@
 import "reflect-metadata"
-import 'dotenv/config'
-import express from 'express';
+import "dotenv/config"
+import { AppDataSource } from "./typeorm/data-source";
 
-const app = express();
-const port = process.env.PORT || 5000;
 
-app.get('/', (req, res) => {
-    res.send('Hello, Express and TypeORM!');
-});
-
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+AppDataSource.initialize().then(async () => {
+    console.log("Database initialized successfully");
+    // Start server here
+}).catch(error => console.log(error))
