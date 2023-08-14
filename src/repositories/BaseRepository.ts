@@ -20,7 +20,15 @@ export abstract class BaseRepository<R> {
     }
 
 
-    find(options: FindManyOptions<R>): Promise<R[]>{
+    async find(options: FindManyOptions<R>): Promise<R[]>{
         return this.Repository.find(options);
+    }
+
+    async findOneOrFail(options: FindManyOptions<R>): Promise<R>{
+        return this.Repository.findOneOrFail(options);
+    }
+
+   async save(entity: Partial<R>): Promise<R>{
+       return this.Repository.save(entity as R);
     }
 }
