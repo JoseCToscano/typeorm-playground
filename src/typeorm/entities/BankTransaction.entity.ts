@@ -1,8 +1,9 @@
 import { BaseEntity } from "./BaseEntity.entity";
-import { Column, JoinColumn, ManyToOne } from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne} from "typeorm";
 import { BankAccount } from "./BankAccount.entity";
 
-export class Transaction extends BaseEntity {
+@Entity('bank_transactions')
+export class BankTransaction extends BaseEntity {
 
     @Column({ type: 'int', nullable: false, unique: false })
     amount!: number;

@@ -31,4 +31,5 @@ export abstract class BaseRepository<R> {
    async save(entity: Partial<R>): Promise<R>{
        return this.Repository.save(entity as R);
     }
+
 }

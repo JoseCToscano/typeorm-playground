@@ -1,24 +1,29 @@
 import {BaseService} from "./BaseService";
 import {EntityManager, QueryRunner} from "typeorm";
-import {UserRepository} from "../repositories/UserRepository";
 import { BankAccountRepository } from "../repositories/BankAccountRepository";
 import { TransactionRepository } from "../repositories/TransactionRepository";
+import { UserService } from "./UserService";
+import { Repository } from "../utils/decorators/Repository";
 
 export class BankTransferService extends BaseService{
-
-    private userRepository: UserRepository;
-
+    @Repository
     private bankAccountRepository: BankAccountRepository;
 
+    @Repository
     private transactionRepository: TransactionRepository;
 
     constructor(entityManagerOrRunner?: EntityManager | QueryRunner) {
         super(entityManagerOrRunner);
-        this.userRepository = new UserRepository(this.connection);
         this.bankAccountRepository = new BankAccountRepository(this.connection);
         this.transactionRepository = new TransactionRepository(this.connection);
     }
 
+    /**
+     * Transfer money from one account to another
+     * @param fromAccountId
+     * @param toAccountId
+     * @param amount
+     */
     async transferMoney(fromAccountId: number, toAccountId: number, amount: number): Promise<void> {
 
         // Simple validation
@@ -35,16 +40,18 @@ export class BankTransferService extends BaseService{
         await this.bankAccountRepository.findOneOrFail({where: {id: toAccountId}});
 
         // Transaction should be atomic: either all operations succeed or all fail
-        await this.transaction.run(async () => {
-            // TODO: call banking service to mock a transaction
-            // TODO: create banking service that needs a transaction to be passed
-            await this.transactionRepository.save({
+        await this.transaction.run(async (queryRunner) => {
+            const bankTransaction = await this.transactionRepository.save({
                 from_account_id: fromAccountId,
                 to_account_id: toAccountId,
                 amount
             });
             await this.bankAccountRepository.decreaseBalance(fromAccountId, amount);
             await this.bankAccountRepository.increaseBalance(toAccountId, amount);
+
+            // Update daily transfered and deposited amount for each account's user
+            const userService = new UserService(queryRunner);
+            await userService.updateDailyTransactionedAmount(bankTransaction);
         });
     }
 

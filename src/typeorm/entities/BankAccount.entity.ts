@@ -1,7 +1,7 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany} from 'typeorm';
+import {Entity, Column, ManyToOne, JoinColumn, OneToMany} from 'typeorm';
 import { BaseEntity } from "./BaseEntity.entity";
 import {User} from "./User.entity";
-import {Transaction} from "./Transaction.entity";
+import {BankTransaction} from "./BankTransaction.entity";
 
 @Entity('bank_accounts')
 export class BankAccount extends BaseEntity {
@@ -16,10 +16,11 @@ export class BankAccount extends BaseEntity {
     @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
     user?: User;
 
-    @OneToMany(() => Transaction, transaction => transaction.from_account)
-    transfers?: Transaction[];
+    @OneToMany(() => BankTransaction, bankTransaction => bankTransaction.from_account)
+    transfers?: BankTransaction[];
 
-    @OneToMany(() => Transaction, transaction => transaction.to_account)
-    deposits?: Transaction[];
+    @OneToMany(() => BankTransaction, bankTransaction => bankTransaction.to_account)
+    deposits?: BankTransaction[];
+
 
 }
