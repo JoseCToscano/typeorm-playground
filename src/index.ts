@@ -1,16 +1,10 @@
 import "reflect-metadata"
 import "dotenv/config"
 import AppDataSource from "./typeorm/data-source";
-import app from './server'
-
-const port = process.env.PORT || 3000;
-
+import serverStartup from "./server";
 
 AppDataSource.initialize().then(async () => {
     console.log("Database initialized successfully");
     // Start server here
-
-    app.listen(port, () => {
-        console.log(`Server is running on port ${port}`);
-    });
+    serverStartup();
 }).catch(error => console.log(error))
