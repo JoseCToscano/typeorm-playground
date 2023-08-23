@@ -73,7 +73,7 @@ export class BaseService {
 	 * if existing runner has not yet been released it will relase it
 	 */
 	private async releaseQueryRunner(): Promise<void> {
-		if (this.queryRunner?.isReleased) {
+		if (this.queryRunner && !this.queryRunner.isReleased) {
 			await this.queryRunner.release();
 		}
 		this.queryRunner = undefined;
